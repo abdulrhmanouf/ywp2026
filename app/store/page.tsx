@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   Store,
@@ -167,9 +168,13 @@ export default function StorePreviewPage() {
       <header className="sticky top-0 z-40 border-b border-border bg-card/80 backdrop-blur-md">
         <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
           <div className="flex items-center gap-3">
-            <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-primary">
-              <Store className="h-5 w-5 text-primary-foreground" />
-            </div>
+            <Image
+              src="/images/ywp-logo.jpg"
+              alt="متجر الأناقة"
+              width={36}
+              height={36}
+              className="h-9 w-9 rounded-xl object-cover"
+            />
             <span className="text-lg font-bold text-foreground">متجر الأناقة</span>
           </div>
 
@@ -367,9 +372,13 @@ export default function StorePreviewPage() {
           <div className="grid gap-8 sm:grid-cols-3">
             <div>
               <div className="flex items-center gap-2">
-                <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-primary">
-                  <Store className="h-5 w-5 text-primary-foreground" />
-                </div>
+                <Image
+                  src="/images/ywp-logo.jpg"
+                  alt="متجر الأناقة"
+                  width={36}
+                  height={36}
+                  className="h-9 w-9 rounded-xl object-cover"
+                />
                 <span className="text-lg font-bold text-foreground">متجر الأناقة</span>
               </div>
               <p className="mt-3 text-sm leading-relaxed text-muted-foreground">

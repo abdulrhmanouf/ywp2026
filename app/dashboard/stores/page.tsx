@@ -80,9 +80,22 @@ export default function StoresPage() {
       category: string;
       template: string;
       description: string;
+      paymentMethods: string[];
+      shippingCompanies: string[];
+      phone: string;
+      email: string;
+      address: string;
+      instagram: string;
+      twitter: string;
     }) => {
       // Simulate API call
       await new Promise((resolve) => setTimeout(resolve, 1500));
+
+      const templateNames: Record<string, string> = {
+        modern: "عصري",
+        classic: "كلاسيكي",
+        minimal: "بسيط",
+      };
 
       const newStore: StoreData = {
         id: stores.length + 1,
@@ -92,7 +105,7 @@ export default function StoresPage() {
         orders: 0,
         revenue: "0 ر.س",
         status: "قيد المراجعة",
-        template: data.template,
+        template: templateNames[data.template] || data.template,
         category: data.category,
         growth: 0,
       };
