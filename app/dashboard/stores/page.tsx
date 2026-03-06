@@ -1,19 +1,35 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useCallback } from "react";
 import Link from "next/link";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion } from "framer-motion";
 import {
   Plus,
   Store,
   ExternalLink,
   MoreHorizontal,
-  X,
-  Globe,
-  Palette,
+  Settings,
+  Trash2,
+  Eye,
+  TrendingUp,
+  TrendingDown,
 } from "lucide-react";
+import { CreateStoreWizard } from "@/components/dashboard/create-store-wizard";
 
-const mockStores = [
+interface StoreData {
+  id: number;
+  name: string;
+  domain: string;
+  products: number;
+  orders: number;
+  revenue: string;
+  status: "نشط" | "متوقف" | "قيد المراجعة";
+  template: string;
+  category: string;
+  growth: number;
+}
+
+const mockStores: StoreData[] = [
   {
     id: 1,
     name: "متجر الأناقة",
@@ -23,6 +39,8 @@ const mockStores = [
     revenue: "25,400 ر.س",
     status: "نشط",
     template: "عصري",
+    category: "fashion",
+    growth: 12.5,
   },
   {
     id: 2,
@@ -32,7 +50,9 @@ const mockStores = [
     orders: 890,
     revenue: "78,200 ر.س",
     status: "نشط",
-    template: "تقني",
+    template: "حديث",
+    category: "electronics",
+    growth: 24.3,
   },
   {
     id: 3,
@@ -43,13 +63,75 @@ const mockStores = [
     revenue: "12,800 ر.س",
     status: "متوقف",
     template: "فاخر",
+    category: "beauty",
+    growth: -5.2,
   },
 ];
 
 export default function StoresPage() {
   const [showCreateModal, setShowCreateModal] = useState(false);
-  const [newStoreName, setNewStoreName] = useState("");
-  const [newStoreDomain, setNewStoreDomain] = useState("");
+  const [stores, setStores] = useState<StoreData[]>(mockStores);
+  const [openDropdown, setOpenDropdown] = useState<number | null>(null);
+
+  const handleCreateStore = useCallback(
+    async (data: {
+      name: string;
+      domain: string;
+      category: string;
+      template: string;
+      description: string;
+      paymentMethods: string[];
+      shippingCompanies: string[];
+      phone: string;
+      email: string;
+      address: string;
+      instagram: string;
+      twitter: string;
+    }) => {
+      // Simulate API call
+      await new Promise((resolve) => setTimeout(resolve, 1500));
+
+      const templateNames: Record<string, string> = {
+        modern: "عصري",
+        classic: "كلاسيكي",
+        minimal: "بسيط",
+      };
+
+      const newStore: StoreData = {
+        id: stores.length + 1,
+        name: data.name,
+        domain: `${data.domain}.ywp.sa`,
+        products: 0,
+        orders: 0,
+        revenue: "0 ر.س",
+        status: "قيد المراجعة",
+        template: templateNames[data.template] || data.template,
+        category: data.category,
+        growth: 0,
+      };
+
+      setStores((prev) => [newStore, ...prev]);
+    },
+    [stores.length]
+  );
+
+  const handleDeleteStore = useCallback((id: number) => {
+    setStores((prev) => prev.filter((store) => store.id !== id));
+    setOpenDropdown(null);
+  }, []);
+
+  const getStatusColor = (status: StoreData["status"]) => {
+    switch (status) {
+      case "نشط":
+        return "bg-primary/10 text-primary";
+      case "متوقف":
+        return "bg-destructive/10 text-destructive";
+      case "قيد المراجعة":
+        return "bg-accent text-accent-foreground";
+      default:
+        return "bg-muted text-muted-foreground";
+    }
+  };
 
   return (
     <div>
@@ -62,7 +144,9 @@ export default function StoresPage() {
           <h1 className="text-2xl font-bold text-foreground sm:text-3xl">
             المتاجر
           </h1>
-          <p className="mt-1 text-muted-foreground">إدارة متاجرك الإلكترونية</p>
+          <p className="mt-1 text-muted-foreground">
+            إدارة متاجرك الإلكترونية ({stores.length} متجر)
+          </p>
         </div>
         <motion.button
           whileHover={{ scale: 1.02 }}
@@ -77,14 +161,14 @@ export default function StoresPage() {
 
       {/* Stores Grid */}
       <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-        {mockStores.map((store, i) => (
+        {stores.map((store, i) => (
           <motion.div
             key={store.id}
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.4, delay: i * 0.1 }}
             whileHover={{ y: -4, transition: { duration: 0.2 } }}
-            className="group rounded-2xl border border-border bg-card p-6 shadow-sm transition-shadow hover:shadow-md"
+            className="group relative rounded-2xl border border-border bg-card p-6 shadow-sm transition-shadow hover:shadow-md"
           >
             <div className="flex items-start justify-between">
               <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-primary/10">
@@ -92,20 +176,47 @@ export default function StoresPage() {
               </div>
               <div className="flex items-center gap-2">
                 <span
-                  className={`rounded-full px-2.5 py-0.5 text-xs font-medium ${
-                    store.status === "نشط"
-                      ? "bg-primary/10 text-primary"
-                      : "bg-muted text-muted-foreground"
-                  }`}
+                  className={`rounded-full px-2.5 py-0.5 text-xs font-medium ${getStatusColor(store.status)}`}
                 >
                   {store.status}
                 </span>
-                <button
-                  className="rounded-lg p-1 text-muted-foreground opacity-0 transition-opacity hover:bg-secondary group-hover:opacity-100"
-                  aria-label="المزيد"
-                >
-                  <MoreHorizontal className="h-4 w-4" />
-                </button>
+                <div className="relative">
+                  <button
+                    onClick={() =>
+                      setOpenDropdown(
+                        openDropdown === store.id ? null : store.id
+                      )
+                    }
+                    className="rounded-lg p-1 text-muted-foreground opacity-0 transition-opacity hover:bg-secondary group-hover:opacity-100"
+                    aria-label="المزيد"
+                  >
+                    <MoreHorizontal className="h-4 w-4" />
+                  </button>
+                  {openDropdown === store.id && (
+                    <motion.div
+                      initial={{ opacity: 0, scale: 0.95 }}
+                      animate={{ opacity: 1, scale: 1 }}
+                      className="absolute left-0 top-full z-10 mt-1 w-40 rounded-xl border border-border bg-card p-1 shadow-lg"
+                    >
+                      <button className="flex w-full items-center gap-2 rounded-lg px-3 py-2 text-right text-sm text-foreground transition-colors hover:bg-secondary">
+                        <Eye className="h-4 w-4" />
+                        معاينة
+                      </button>
+                      <button className="flex w-full items-center gap-2 rounded-lg px-3 py-2 text-right text-sm text-foreground transition-colors hover:bg-secondary">
+                        <Settings className="h-4 w-4" />
+                        الإعدادات
+                      </button>
+                      <hr className="my-1 border-border" />
+                      <button
+                        onClick={() => handleDeleteStore(store.id)}
+                        className="flex w-full items-center gap-2 rounded-lg px-3 py-2 text-right text-sm text-destructive transition-colors hover:bg-destructive/10"
+                      >
+                        <Trash2 className="h-4 w-4" />
+                        حذف
+                      </button>
+                    </motion.div>
+                  )}
+                </div>
               </div>
             </div>
 
@@ -115,6 +226,27 @@ export default function StoresPage() {
             <p className="mt-1 text-sm text-muted-foreground" dir="ltr">
               {store.domain}
             </p>
+
+            {/* Growth indicator */}
+            <div className="mt-2 flex items-center gap-1">
+              {store.growth > 0 ? (
+                <TrendingUp className="h-3.5 w-3.5 text-primary" />
+              ) : store.growth < 0 ? (
+                <TrendingDown className="h-3.5 w-3.5 text-destructive" />
+              ) : null}
+              <span
+                className={`text-xs font-medium ${
+                  store.growth > 0
+                    ? "text-primary"
+                    : store.growth < 0
+                      ? "text-destructive"
+                      : "text-muted-foreground"
+                }`}
+              >
+                {store.growth > 0 ? "+" : ""}
+                {store.growth}% هذا الشهر
+              </span>
+            </div>
 
             <div className="mt-4 grid grid-cols-3 gap-3 border-t border-border pt-4">
               <div>
@@ -153,110 +285,40 @@ export default function StoresPage() {
         ))}
       </div>
 
-      {/* Create Store Modal */}
-      <AnimatePresence>
-        {showCreateModal && (
-          <>
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              onClick={() => setShowCreateModal(false)}
-              className="fixed inset-0 z-50 bg-foreground/20 backdrop-blur-sm"
-            />
-            <motion.div
-              initial={{ opacity: 0, scale: 0.95, y: 20 }}
-              animate={{ opacity: 1, scale: 1, y: 0 }}
-              exit={{ opacity: 0, scale: 0.95, y: 20 }}
-              transition={{ type: "spring", stiffness: 300, damping: 30 }}
-              className="fixed left-1/2 top-1/2 z-50 w-full max-w-lg -translate-x-1/2 -translate-y-1/2 rounded-2xl border border-border bg-card p-6 shadow-xl sm:p-8"
-            >
-              <div className="flex items-center justify-between">
-                <h2 className="text-xl font-bold text-foreground">
-                  إنشاء متجر جديد
-                </h2>
-                <button
-                  onClick={() => setShowCreateModal(false)}
-                  className="flex h-8 w-8 items-center justify-center rounded-lg text-muted-foreground hover:bg-secondary"
-                  aria-label="إغلاق"
-                >
-                  <X className="h-5 w-5" />
-                </button>
-              </div>
+      {/* Empty state */}
+      {stores.length === 0 && (
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          className="flex flex-col items-center justify-center rounded-2xl border border-dashed border-border py-16 text-center"
+        >
+          <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-primary/10">
+            <Store className="h-8 w-8 text-primary" />
+          </div>
+          <h3 className="mt-4 text-lg font-semibold text-foreground">
+            لا توجد متاجر بعد
+          </h3>
+          <p className="mt-2 max-w-sm text-sm text-muted-foreground">
+            ابدأ رحلتك في التجارة الإلكترونية بإنشاء متجرك الأول
+          </p>
+          <motion.button
+            whileHover={{ scale: 1.02 }}
+            whileTap={{ scale: 0.98 }}
+            onClick={() => setShowCreateModal(true)}
+            className="mt-6 flex items-center gap-2 rounded-xl bg-primary px-6 py-3 text-sm font-semibold text-primary-foreground shadow-lg shadow-primary/20"
+          >
+            <Plus className="h-4 w-4" />
+            إنشاء متجر جديد
+          </motion.button>
+        </motion.div>
+      )}
 
-              <div className="mt-6 space-y-4">
-                <div>
-                  <label className="mb-2 block text-sm font-medium text-foreground">
-                    اسم المتجر
-                  </label>
-                  <div className="relative">
-                    <Store className="pointer-events-none absolute right-3 top-1/2 h-5 w-5 -translate-y-1/2 text-muted-foreground" />
-                    <input
-                      type="text"
-                      value={newStoreName}
-                      onChange={(e) => setNewStoreName(e.target.value)}
-                      placeholder="أدخل اسم المتجر"
-                      className="w-full rounded-xl border border-input bg-background py-3 pe-4 ps-4 pr-11 text-foreground placeholder:text-muted-foreground focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20"
-                    />
-                  </div>
-                </div>
-
-                <div>
-                  <label className="mb-2 block text-sm font-medium text-foreground">
-                    النطاق الفرعي
-                  </label>
-                  <div className="relative">
-                    <Globe className="pointer-events-none absolute right-3 top-1/2 h-5 w-5 -translate-y-1/2 text-muted-foreground" />
-                    <input
-                      type="text"
-                      value={newStoreDomain}
-                      onChange={(e) => setNewStoreDomain(e.target.value)}
-                      placeholder="storename"
-                      className="w-full rounded-xl border border-input bg-background py-3 pe-4 ps-4 pr-11 text-foreground placeholder:text-muted-foreground focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20"
-                      dir="ltr"
-                    />
-                    <span className="absolute left-3 top-1/2 -translate-y-1/2 text-sm text-muted-foreground">
-                      .ywp.sa
-                    </span>
-                  </div>
-                </div>
-
-                <div>
-                  <label className="mb-2 block text-sm font-medium text-foreground">
-                    القالب
-                  </label>
-                  <div className="grid grid-cols-3 gap-3">
-                    {["عصري", "كلاسيكي", "فاخر"].map((t) => (
-                      <button
-                        key={t}
-                        className="flex flex-col items-center gap-2 rounded-xl border border-border p-4 text-sm text-muted-foreground transition-colors hover:border-primary hover:text-primary focus:border-primary focus:text-primary"
-                      >
-                        <Palette className="h-5 w-5" />
-                        {t}
-                      </button>
-                    ))}
-                  </div>
-                </div>
-              </div>
-
-              <div className="mt-6 flex gap-3">
-                <button
-                  onClick={() => setShowCreateModal(false)}
-                  className="flex-1 rounded-xl border border-border py-3 text-sm font-medium text-foreground transition-colors hover:bg-secondary"
-                >
-                  إلغاء
-                </button>
-                <button
-                  onClick={() => setShowCreateModal(false)}
-                  className="flex-1 rounded-xl bg-primary py-3 text-sm font-semibold text-primary-foreground shadow-lg shadow-primary/20 transition-all hover:opacity-90"
-                >
-                  إنشاء المتجر
-                </button>
-              </div>
-            </motion.div>
-          </>
-        )}
-      </AnimatePresence>
+      {/* Create Store Wizard */}
+      <CreateStoreWizard
+        isOpen={showCreateModal}
+        onClose={() => setShowCreateModal(false)}
+        onSubmit={handleCreateStore}
+      />
     </div>
   );
 }

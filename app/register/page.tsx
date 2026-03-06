@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
 import { Store, Eye, EyeOff, ArrowLeft, Mail, Lock, User } from "lucide-react";
@@ -42,10 +43,14 @@ export default function RegisterPage() {
           >
             <div className="mb-8 flex items-center justify-between">
               <Link href="/" className="flex items-center gap-2">
-                <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-primary">
-                  <Store className="h-5 w-5 text-primary-foreground" />
-                </div>
-                <span className="text-xl font-bold text-foreground">YWP</span>
+                <Image
+                  src="/images/ywp-logo.jpg"
+                  alt="YWP"
+                  width={40}
+                  height={40}
+                  className="h-10 w-10 rounded-lg object-cover"
+                  priority
+                />
               </Link>
               <ThemeToggle />
             </div>
@@ -198,35 +203,39 @@ export default function RegisterPage() {
       </div>
 
       {/* Left side - Decorative */}
-      <div className="hidden flex-1 items-center justify-center bg-primary/5 lg:flex">
+      <div className="hidden flex-1 items-center justify-center bg-primary lg:flex">
         <motion.div
           initial={{ opacity: 0, scale: 0.9 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 0.7 }}
           className="max-w-md text-center"
         >
-          <div className="mx-auto mb-8 flex h-24 w-24 items-center justify-center rounded-3xl bg-primary/10">
-            <Store className="h-12 w-12 text-primary" />
-          </div>
-          <h2 className="text-2xl font-bold text-foreground">
+          <Image
+            src="/images/ywp-logo.jpg"
+            alt="YWP"
+            width={120}
+            height={120}
+            className="mx-auto mb-8 h-28 w-28 rounded-2xl object-cover shadow-lg"
+          />
+          <h2 className="text-2xl font-bold text-primary-foreground">
             انضم لأكثر من 15,000 تاجر
           </h2>
-          <p className="mt-4 leading-relaxed text-muted-foreground">
+          <p className="mt-4 leading-relaxed text-primary-foreground/80">
             منصة YWP تساعدك على إطلاق متجرك الإلكتروني وتنمية أعمالك بأقل
             جهد ممكن. ابدأ مجاناً اليوم.
           </p>
           <div className="mt-8 grid grid-cols-3 gap-4 text-center">
-            <div className="rounded-xl bg-card p-3 shadow-sm">
-              <div className="text-lg font-bold text-primary">14 يوم</div>
-              <div className="text-xs text-muted-foreground">تجربة مجانية</div>
+            <div className="rounded-xl bg-primary-foreground/10 p-3 backdrop-blur-sm">
+              <div className="text-lg font-bold text-primary-foreground">14 يوم</div>
+              <div className="text-xs text-primary-foreground/70">تجربة مجانية</div>
             </div>
-            <div className="rounded-xl bg-card p-3 shadow-sm">
-              <div className="text-lg font-bold text-primary">24/7</div>
-              <div className="text-xs text-muted-foreground">دعم فني</div>
+            <div className="rounded-xl bg-primary-foreground/10 p-3 backdrop-blur-sm">
+              <div className="text-lg font-bold text-primary-foreground">24/7</div>
+              <div className="text-xs text-primary-foreground/70">دعم فني</div>
             </div>
-            <div className="rounded-xl bg-card p-3 shadow-sm">
-              <div className="text-lg font-bold text-primary">99.9%</div>
-              <div className="text-xs text-muted-foreground">وقت التشغيل</div>
+            <div className="rounded-xl bg-primary-foreground/10 p-3 backdrop-blur-sm">
+              <div className="text-lg font-bold text-primary-foreground">99.9%</div>
+              <div className="text-xs text-primary-foreground/70">وقت التشغيل</div>
             </div>
           </div>
         </motion.div>

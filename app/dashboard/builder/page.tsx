@@ -74,9 +74,9 @@ const templates = [
 
 // ── Color Palettes ──
 const colorPalettes = [
-  { id: "green", name: "أخضر سعودي", primary: "#16a34a", accent: "#15803d", bg: "#f0fdf4" },
+  { id: "navy", name: "أزرق داكن (YWP)", primary: "#1E2A3A", accent: "#E8DCC4", bg: "#f5f3ef" },
   { id: "blue", name: "أزرق ملكي", primary: "#2563eb", accent: "#1d4ed8", bg: "#eff6ff" },
-  { id: "purple", name: "بنفسجي", primary: "#9333ea", accent: "#7e22ce", bg: "#faf5ff" },
+  { id: "slate", name: "رمادي أنيق", primary: "#334155", accent: "#cbd5e1", bg: "#f8fafc" },
   { id: "rose", name: "وردي", primary: "#e11d48", accent: "#be123c", bg: "#fff1f2" },
   { id: "amber", name: "ذهبي", primary: "#d97706", accent: "#b45309", bg: "#fffbeb" },
   { id: "teal", name: "تركوازي", primary: "#0d9488", accent: "#0f766e", bg: "#f0fdfa" },
@@ -125,7 +125,7 @@ export default function StoreBuilderPage() {
   // ── Store Config State ──
   const [config, setConfig] = useState({
     template: "modern",
-    colorPalette: "green",
+    colorPalette: "navy",
     font: "ibm",
     headerStyle: "full-banner",
     productDisplay: "grid-3",
@@ -362,7 +362,7 @@ export default function StoreBuilderPage() {
                   transition={{ duration: 0.25 }}
                 >
                   <h2 className="mb-1 text-lg font-semibold text-foreground">تصميم الهيدر</h2>
-                  <p className="mb-5 text-sm text-muted-foreground">اختر نمط عرض البانر الرئيسي</p>
+                  <p className="mb-5 text-sm text-muted-foreground">اختر نمط عرض البانر الرئيس��</p>
                   <div className="grid gap-3 sm:grid-cols-2">
                     {headerOptions.map((h) => (
                       <button
